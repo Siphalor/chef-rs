@@ -10,7 +10,7 @@ pub struct Ingredient {
 impl Ingredient {
     pub fn instantiate(def: &IngredientDefinition) -> (String, Ingredient) {
         (def.name().clone(), Ingredient {
-            value: def.initial_value().unwrap_or(0.0),
+            value: def.initial_value().unwrap_or(1.0),
             liquid: def.liquid(),
         })
     }

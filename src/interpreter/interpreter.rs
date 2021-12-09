@@ -78,7 +78,11 @@ impl Interpreter {
                 Statement::Pop { ingredient: ingredient_name, mixing_bowl } => {
                     let mixing_bowl = mixing_bowls.get_mut(mixing_bowl.clone());
                     if let Some(value) = mixing_bowl.pop() {
-                        ingredients.insert(ingredient_name.clone(), value);
+                        if let Some(ingredient) = ingredients.get_mut(ingredient_name) {
+                            ingredient.value = value.value;
+                        } else {
+                            ingredients.insert(ingredient_name.clone(), value);
+                        }
                     } else {
                         return Err("tried to pop from empty bowl!".to_string());
                     }

@@ -21,7 +21,7 @@ recipeCommentLine = _{ !ingredientListTitle ~ (!NEWLINE ~ ANY)+ }
 ingredientName = @{ ingredientNameWord ~ (ingredientNameDelimiter ~ ingredientNameWord)* }
 ingredientNameDelimiter = _{ " " | "-" | "+" }
 ingredientNameWord = _{
-  !(("into " | "to " | "from ") ~ mixingBowl | "until " | "for " ~ ASCII_DIGIT+ ~ " minutes." | "contents" ~ (" of " ~ mixingBowl)? ~ ".")
+  !(("into " | "to " | "from ") ~ (mixingBowl | "the "? ~ "refrigerator" ) | "until " | "for " ~ ASCII_DIGIT+ ~ " minutes." | "contents" ~ (" of " ~ mixingBowl)? ~ ".")
     ~ (ALPHABETIC | ASCII_DIGIT )+
 }
 ingredientNameWrapper = _{ "the "? ~ ingredientName }
