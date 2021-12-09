@@ -49,12 +49,13 @@ bakingDishNumber = { ASCII_DIGIT+ }
 
 method = { "Method." ~ WHITE_NEWLINE ~ (methodStatement ~ WHITE_SPACE+)+ ~ servesStatement? }
 methodStatement = _{
-  takeStatement | putStatement | foldStatement | addStatement | removeStatement | combineStatement
+  takeStatement | checkStatement | putStatement | foldStatement | addStatement | removeStatement | combineStatement
     | divideStatement | addDryStatement | liquefyStatement | liquefyBowlStatement
     | stirStatement | stirBowlStatement | mixBowlStatement | cleanBowlStatement | pourBowlStatement
     | loopBlock | serveWithStatement | refrigerateStatement
 }
 takeStatement = { "Take " ~ ingredientNameWrapper ~ " from " ~ "the "? ~ "refrigerator." }
+checkStatement = { "Check the refrigerator for " ~ ingredientNameWrapper ~ "." }
 putStatement = { "Put " ~ ingredientNameWrapper ~ (" into " ~ mixingBowl)? ~ "." }
 foldStatement = { "Fold " ~ ingredientNameWrapper ~ (" into " ~ mixingBowl)? ~ "." }
 addStatement = { "Add " ~ ingredientNameWrapper ~ (" to " ~ mixingBowl)? ~ "." }

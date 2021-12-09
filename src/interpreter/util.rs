@@ -56,6 +56,17 @@ impl<'a, K: Ord + Clone, V: Clone> LazyTreeMap<'a, K, V> {
     }
 }
 
+pub fn check_for_number(buffer: &mut String) -> bool {
+    if buffer.trim().is_empty() {
+        std::io::stdin().read_line(buffer).expect("failed to read from STDIN");
+    }
+
+    if let Some(sym) =  buffer.chars().peekable().peek() {
+        return sym.is_numeric();
+    }
+    return false;
+}
+
 pub fn read_number(buffer: &mut String) -> f64 {
     loop {
         if buffer.is_empty() {

@@ -7,7 +7,7 @@ use crate::ast::recipe::Recipes;
 use crate::ast::statement::Statement;
 use crate::ast::util::{BakingDishId, MixingBowlId};
 use crate::interpreter::ingredient::Ingredient;
-use crate::interpreter::util::{LazyTreeMap, LazyTreeMapParent, read_char, read_number};
+use crate::interpreter::util::{check_for_number, LazyTreeMap, LazyTreeMapParent, read_char, read_number};
 
 pub type MixingBowl = Vec<Ingredient>;
 pub type BakingDish = Vec<Ingredient>;
@@ -68,6 +68,14 @@ impl Interpreter {
                             value: read_number(read_buffer),
                             liquid: false,
                         });
+                    }
+                }
+                Statement::CheckInput { ingredient } => {
+                    let ingredient = Self::expect_ingredient_mut(ingredients, ingredient)?;
+                    if ingredient.liquid {
+                        ingredient.value = if read_buffer.is_empty() { 1.0 } else { 0.0 };
+                    } else {
+                        ingredient.value = if check_for_number(read_buffer) { 1.0 } else { 0.0 };
                     }
                 }
                 Statement::Push { ingredient, mixing_bowl } => {

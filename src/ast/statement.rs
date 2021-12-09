@@ -9,6 +9,9 @@ pub enum Statement {
     Read {
         ingredient: String
     },
+    CheckInput {
+        ingredient: String
+    },
     Push {
         ingredient: String,
         mixing_bowl: MixingBowlId,
@@ -82,6 +85,11 @@ impl Statement {
         match rule {
             Rule::takeStatement => {
                 Ok(Statement::Read {
+                    ingredient: expect_ingredient_name(&mut pairs, &span)?,
+                })
+            }
+            Rule::checkStatement => {
+                Ok(Statement::CheckInput {
                     ingredient: expect_ingredient_name(&mut pairs, &span)?,
                 })
             }
