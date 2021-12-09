@@ -1,0 +1,84 @@
+INLINE_WHITESPACE = _{ !NEWLINE ~ WHITE_SPACE }
+WHITE_NEWLINE = _{ INLINE_WHITESPACE* ~ NEWLINE ~ WHITE_SPACE* }
+
+floatNumber = { ASCII_DIGIT+ ~ ("." ~ ASCII_DIGIT+)? }
+
+recipes = { recipe ~ (WHITE_NEWLINE ~ recipe)* ~ WHITE_SPACE* ~ EOI }
+recipe = {
+  recipeTitle ~ WHITE_NEWLINE
+    ~ recipeComment?
+    ~ ingredientList ~ WHITE_NEWLINE
+    ~ (cookingTime ~ WHITE_NEWLINE)?
+    ~ (ovenTemperature ~ WHITE_NEWLINE)?
+    ~ method
+}
+
+recipeName = @{ (ALPHABETIC | ASCII_DIGIT | " " | "-" | "+" | "/")+ }
+recipeTitle = _{ recipeName ~ "." }
+recipeComment = @{ recipeCommentLine ~ (NEWLINE+ ~ recipeCommentLine)* ~ NEWLINE+ }
+recipeCommentLine = _{ !ingredientListTitle ~ (!NEWLINE ~ ANY)+ }
+
+ingredientName = @{ ingredientNameWord ~ (ingredientNameDelimiter ~ ingredientNameWord)* }
+ingredientNameDelimiter = _{ " " | "-" | "+" }
+ingredientNameWord = _{
+  !(("into " | "to " | "from ") ~ mixingBowl | "until " | "for " ~ ASCII_DIGIT+ ~ " minutes." | "contents" ~ (" of " ~ mixingBowl)? ~ ".")
+    ~ (ALPHABETIC | ASCII_DIGIT )+
+}
+ingredientNameWrapper = _{ "the "? ~ ingredientName }
+
+ingredientListTitle = _{ "Ingredients." }
+ingredientList = { ingredientListTitle ~ WHITE_NEWLINE ~ ingredientDefinition ~ (WHITE_NEWLINE ~ ingredientDefinition)* }
+ingredientDefinition = {
+  !cookingTime ~ !ovenTemperature ~ !"Method."
+    ~ (ingredientInitialValue ~ INLINE_WHITESPACE+)? ~ ((ingredientMeasureType ~ INLINE_WHITESPACE+)? ~ ingredientMeasure ~ INLINE_WHITESPACE+)? ~ ingredientName
+}
+ingredientInitialValue = @{ floatNumber }
+ingredientMeasureType = { "heaped" | "level" }
+ingredientMeasure = { ingredientMeasureDry | ingredientMeasureLiquid | ingredientMeasureGeneric }
+ingredientMeasureDry = { "g" | "kg" | "pinch" ~ "es"? }
+ingredientMeasureLiquid = { "ml" | "l" | "dash" ~ "es"? }
+ingredientMeasureGeneric = { "cup" ~ "s"? | "teaspoon" ~ "s"? | "talespoon" ~ "s"? }
+
+cookingTime = { "Cooking time: " ~ floatNumber ~ ("hour" ~ "s"? | "minute" ~ "s"?) ~ "." }
+ovenTemperature = { "Preheat oven to " ~ floatNumber ~ " degrees Celsius" ~ (" gas mark " ~ floatNumber)? ~ "." }
+
+mixingBowl = { "the "? ~ (mixingBowlNumber ~ ("st" | "nd" | "rd" | "th") ~ " ")? ~ "mixing bowl" }
+mixingBowlNumber = { ASCII_DIGIT+ }
+bakingDish = { "the "? ~ (bakingDishNumber ~ ("st" | "nd" | "rd" | "th") ~ " ")? ~ "baking dish" }
+bakingDishNumber = { ASCII_DIGIT+ }
+
+method = { "Method." ~ WHITE_NEWLINE ~ (methodStatement ~ WHITE_SPACE+)+ ~ servesStatement? }
+methodStatement = _{
+  takeStatement | putStatement | foldStatement | addStatement | removeStatement | combineStatement
+    | divideStatement | addDryStatement | liquefyStatement | liquefyBowlStatement
+    | stirStatement | stirBowlStatement | mixBowlStatement | cleanBowlStatement | pourBowlStatement
+    | loopBlock | serveWithStatement | refrigerateStatement
+}
+takeStatement = { "Take " ~ ingredientNameWrapper ~ " from " ~ "the "? ~ "refrigerator." }
+putStatement = { "Put " ~ ingredientNameWrapper ~ (" into " ~ mixingBowl)? ~ "." }
+foldStatement = { "Fold " ~ ingredientNameWrapper ~ (" into " ~ mixingBowl)? ~ "." }
+addStatement = { "Add " ~ ingredientNameWrapper ~ (" to " ~ mixingBowl)? ~ "." }
+removeStatement = { "Remove " ~ ingredientNameWrapper ~ (" from " ~ mixingBowl)? ~ "." }
+combineStatement = { "Combine " ~ ingredientNameWrapper ~ (" into " ~ mixingBowl)? ~ "." }
+divideStatement = { "Divide " ~ ingredientNameWrapper ~ (" into " ~ mixingBowl)? ~ "." }
+addDryStatement = { "Add dry ingredients" ~ (" to " ~ mixingBowl)? ~ "." }
+liquefyName = _{ "Liquefy" | "Liquify" }
+liquefyStatement = { liquefyName ~ " " ~ ingredientNameWrapper ~ "." }
+liquefyBowlStatement = { liquefyName ~ " the"? ~ " contents" ~ (" of " ~ mixingBowl)? ~ "." }
+stirStatement = { "Stir " ~ ingredientNameWrapper ~ (" into " ~ mixingBowl)? ~ "." }
+stirBowlStatement = { "Stir " ~ (mixingBowl ~ " ")? ~ "for " ~ stirBowlTime ~ " minutes." }
+stirBowlTime = { ASCII_DIGIT+ }
+mixBowlStatement = { "Mix " ~ (mixingBowl ~ " ")? ~ "well." }
+cleanBowlStatement = { "Clean " ~ mixingBowl ~ "." }
+pourBowlStatement = { "Pour " ~ "the "? ~ "contents" ~ (" of " ~ mixingBowl)? ~ " into " ~ bakingDish ~ "." }
+loopBlock = { loopBeginStatement ~ WHITE_SPACE+ ~ ((methodStatement | loopBreakStatement) ~ WHITE_SPACE+)* ~ loopEndStatement }
+loopBeginStatement = { loopVerb ~ " " ~ "the " ~ ingredientName ~ "." }
+loopVerb = { ALPHABETIC+ }
+loopEndStatement = { ALPHABETIC+ ~ ( " " ~ "the "? ~ ingredientName )? ~ " until " ~ loopVerb ~ "." }
+loopBreakStatement = { "Set aside." }
+serveWithStatement = { "Serve with " ~ recipeName ~ "." }
+refrigerateStatement = { "Refrigerate" ~ (" for " ~ refrigerateDuration ~ " hours" )? ~ "." }
+refrigerateDuration = { ASCII_DIGIT+ }
+
+servesStatement = { "Serves " ~ servesPeople ~ "." }
+servesPeople = { ASCII_DIGIT+ }
