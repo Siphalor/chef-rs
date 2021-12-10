@@ -152,6 +152,30 @@ impl Interpreter {
                         baking_dish.push(ingredient.clone());
                     }
                 }
+                Statement::Examine { ingredient: ingredient_name } => {
+                    if let Some(ingredient) = ingredients.get(ingredient_name) {
+                        println!("There is {} of {}{}", ingredient.value, ingredient_name, if ingredient.liquid { " (liquid)" } else { "" });
+                    } else {
+                        println!("{} does not exist.", ingredient_name);
+                    }
+                }
+                Statement::ExamineBowl { mixing_bowl: mixing_bowl_no } => {
+                    if let Some(mixing_bowl) = mixing_bowls.get(mixing_bowl_no) {
+                        if mixing_bowl.is_empty() {
+                            println!("Mixing bowl {} is empty.", mixing_bowl_no);
+                        } else {
+                            println!("Content of mixing bowl {}:{}", *mixing_bowl_no, mixing_bowl.iter()
+                                .map(|val| format!("\n    {} (liquid: {})", val.value, val.liquid))
+                                .fold(String::new(), |mut a, b| {
+                                    a.push_str(&*b);
+                                    a
+                                })
+                            );
+                        }
+                    } else {
+                        println!("Mixing bowl {} does not exist.", *mixing_bowl_no);
+                    }
+                }
                 Statement::Loop { test_ingredient, decrement_ingredient, statements: loop_statements } => {
                     while (Self::expect_ingredient(ingredients, test_ingredient)?.value - 0.0).abs() > 0.0000000001 {
                         match self.execute_statements(loop_statements, mixing_bowls, baking_dishes, ingredients, read_buffer)? {

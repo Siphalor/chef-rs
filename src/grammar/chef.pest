@@ -76,6 +76,7 @@ pourBowlStatement = { "Pour " ~ "the "? ~ "contents" ~ (" of " ~ mixingBowl)? ~ 
 serveWithStatement = { "Serve with " ~ recipeName ~ "." }
 refrigerateStatement = { "Refrigerate" ~ (" for " ~ refrigerateDuration ~ " hours" )? ~ "." }
 refrigerateDuration = { ASCII_DIGIT+ }
+examineStatement = { "Examine " ~ (mixingBowl | ingredientNameWrapper) ~ "." }
 loopBlock = { loopBeginStatement ~ WHITE_SPACE+ ~ ((loopBreakStatement | methodStatement) ~ WHITE_SPACE+)* ~ loopEndStatement }
 loopBeginStatement = { loopVerb ~ " " ~ ingredientName ~ "." }
 loopVerb = { ALPHABETIC+ }

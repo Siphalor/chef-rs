@@ -29,3 +29,9 @@ There is a new syntax that allows you to check ahead a bit in the input buffer:
 - If the ingredient is liquid, if there is *anything* left in the input buffer. The user will not be prompted.
 
 Depending on the outcome, the ingredient will either contain 1.0 or 0.0.
+
+### `Examine`ing stuff
+
+You can `Examine` ingredients or mixing bowls, which will display their current status.
+
+This is intended for debugging.

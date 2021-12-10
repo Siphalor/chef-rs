@@ -63,6 +63,12 @@ pub enum Statement {
         mixing_bowl: MixingBowlId,
         baking_dish: BakingDishId,
     },
+    Examine {
+        ingredient: String,
+    },
+    ExamineBowl {
+        mixing_bowl: MixingBowlId,
+    },
     Loop {
         test_ingredient: String,
         decrement_ingredient: Option<String>,
@@ -198,6 +204,17 @@ impl Statement {
                     mixing_bowl,
                     baking_dish: expect_baking_dish(&mut pairs)?,
                 })
+            }
+            Rule::examineStatement => {
+                if let Some(pair) = pairs.try_next(Rule::ingredientName) {
+                    Ok(Statement::Examine {
+                        ingredient: pair.as_str().to_lowercase(),
+                    })
+                } else {
+                    Ok(Statement::ExamineBowl {
+                        mixing_bowl: expect_mixing_bowl(&mut pairs)?,
+                    })
+                }
             }
             Rule::loopBlock => {
                 let begin = pairs.expect_next(Rule::loopBeginStatement, &span)?;
