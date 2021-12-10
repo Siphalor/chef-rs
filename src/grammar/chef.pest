@@ -47,12 +47,12 @@ mixingBowlNumber = { ASCII_DIGIT+ }
 bakingDish = { "the "? ~ (bakingDishNumber ~ ("st" | "nd" | "rd" | "th") ~ " ")? ~ "baking dish" }
 bakingDishNumber = { ASCII_DIGIT+ }
 
-method = { "Method." ~ WHITE_NEWLINE ~ (methodStatement ~ WHITE_SPACE+)+ ~ servesStatement? }
+method = { "Method." ~ WHITE_NEWLINE ~ (methodStatement ~ WHITE_SPACE*)+ ~ servesStatement? ~ ("-"|"="|"_"){3,}? }
 methodStatement = _{
   takeStatement | checkStatement | putStatement | foldStatement | addStatement | removeStatement | combineStatement
     | divideStatement | addDryStatement | liquefyStatement | liquefyBowlStatement
     | stirStatement | stirBowlStatement | mixBowlStatement | cleanBowlStatement | pourBowlStatement
-    | loopBlock | serveWithStatement | refrigerateStatement
+    | serveWithStatement | refrigerateStatement | loopBlock
 }
 takeStatement = { "Take " ~ ingredientNameWrapper ~ " from " ~ "the "? ~ "refrigerator." }
 checkStatement = { "Check the refrigerator for " ~ ingredientNameWrapper ~ "." }
@@ -72,14 +72,14 @@ stirBowlTime = { ASCII_DIGIT+ }
 mixBowlStatement = { "Mix " ~ (mixingBowl ~ " ")? ~ "well." }
 cleanBowlStatement = { "Clean " ~ mixingBowl ~ "." }
 pourBowlStatement = { "Pour " ~ "the "? ~ "contents" ~ (" of " ~ mixingBowl)? ~ " into " ~ bakingDish ~ "." }
-loopBlock = { loopBeginStatement ~ WHITE_SPACE+ ~ ((methodStatement | loopBreakStatement) ~ WHITE_SPACE+)* ~ loopEndStatement }
-loopBeginStatement = { loopVerb ~ " " ~ "the " ~ ingredientName ~ "." }
-loopVerb = { ALPHABETIC+ }
-loopEndStatement = { ALPHABETIC+ ~ ( " " ~ "the "? ~ ingredientName )? ~ " until " ~ loopVerb ~ "." }
-loopBreakStatement = { "Set aside." }
 serveWithStatement = { "Serve with " ~ recipeName ~ "." }
 refrigerateStatement = { "Refrigerate" ~ (" for " ~ refrigerateDuration ~ " hours" )? ~ "." }
 refrigerateDuration = { ASCII_DIGIT+ }
+loopBlock = { loopBeginStatement ~ WHITE_SPACE+ ~ ((loopBreakStatement | methodStatement) ~ WHITE_SPACE+)* ~ loopEndStatement }
+loopBeginStatement = { loopVerb ~ " " ~ ingredientName ~ "." }
+loopVerb = { ALPHABETIC+ }
+loopEndStatement = { ALPHABETIC+ ~ ( " " ~ "the "? ~ ingredientName )? ~ " until " ~ loopVerb ~ "." }
+loopBreakStatement = { "Set aside." }
 
 servesStatement = { "Serves " ~ servesPeople ~ "." }
 servesPeople = { ASCII_DIGIT+ }
