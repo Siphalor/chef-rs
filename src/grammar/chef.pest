@@ -80,7 +80,7 @@ examineStatement = { "Examine " ~ (mixingBowl | ingredientNameWrapper) ~ "." }
 loopBlock = { loopBeginStatement ~ WHITE_SPACE+ ~ ((loopBreakStatement | methodStatement) ~ WHITE_SPACE+)* ~ loopEndStatement }
 loopBeginStatement = { loopVerb ~ " " ~ ingredientNameWrapper ~ "." }
 loopVerb = { ALPHABETIC+ }
-loopEndStatement = { ALPHABETIC+ ~ ( " " ~ "the "? ~ ingredientName )? ~ " until " ~ loopVerb ~ "." }
+loopEndStatement = { ALPHABETIC+ ~ ( " " ~ ingredientNameWrapper)? ~ " until " ~ loopVerb ~ "." }
 loopBreakStatement = { "Set aside." }
 
 servesStatement = { "Serves " ~ servesPeople ~ "." }
