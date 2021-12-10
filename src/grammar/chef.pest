@@ -11,7 +11,7 @@ recipe = {
     ~ (cookingTime ~ WHITE_NEWLINE)?
     ~ (ovenTemperature ~ WHITE_NEWLINE)?
     ~ method
-    ~ (WHITE_NEWLINE ~ ("-"|"="|"_"){3,})?
+    ~ (WHITE_SPACE* ~ ("-"|"="|"_"){3,})?
 }
 
 recipeName = @{ (ALPHABETIC | ASCII_DIGIT | " " | "-" | "+" | "/")+ }
@@ -53,10 +53,10 @@ methodStatement = _{
   takeStatement | checkStatement | putStatement | foldStatement | addStatement | removeStatement | combineStatement
     | divideStatement | addDryStatement | liquefyStatement | liquefyBowlStatement
     | stirStatement | stirBowlStatement | mixBowlStatement | cleanBowlStatement | pourBowlStatement
-    | serveWithStatement | refrigerateStatement | loopBlock
+    | serveWithStatement | refrigerateStatement | examineStatement | loopBlock
 }
 takeStatement = { "Take " ~ ingredientNameWrapper ~ " from " ~ "the "? ~ "refrigerator." }
-checkStatement = { "Check the refrigerator for " ~ ingredientNameWrapper ~ "." }
+checkStatement = { "Check " ~ "the "? ~ "refrigerator for " ~ ingredientNameWrapper ~ "." }
 putStatement = { "Put " ~ ingredientNameWrapper ~ (" into " ~ mixingBowl)? ~ "." }
 foldStatement = { "Fold " ~ ingredientNameWrapper ~ (" into " ~ mixingBowl)? ~ "." }
 addStatement = { "Add " ~ ingredientNameWrapper ~ (" to " ~ mixingBowl)? ~ "." }
@@ -78,7 +78,7 @@ refrigerateStatement = { "Refrigerate" ~ (" for " ~ refrigerateDuration ~ " hour
 refrigerateDuration = { ASCII_DIGIT+ }
 examineStatement = { "Examine " ~ (mixingBowl | ingredientNameWrapper) ~ "." }
 loopBlock = { loopBeginStatement ~ WHITE_SPACE+ ~ ((loopBreakStatement | methodStatement) ~ WHITE_SPACE+)* ~ loopEndStatement }
-loopBeginStatement = { loopVerb ~ " " ~ ingredientName ~ "." }
+loopBeginStatement = { loopVerb ~ " " ~ ingredientNameWrapper ~ "." }
 loopVerb = { ALPHABETIC+ }
 loopEndStatement = { ALPHABETIC+ ~ ( " " ~ "the "? ~ ingredientName )? ~ " until " ~ loopVerb ~ "." }
 loopBreakStatement = { "Set aside." }

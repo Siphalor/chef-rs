@@ -73,7 +73,7 @@ impl Interpreter {
                 Statement::CheckInput { ingredient } => {
                     let ingredient = Self::expect_ingredient_mut(ingredients, ingredient)?;
                     if ingredient.liquid {
-                        ingredient.value = if read_buffer.is_empty() { 1.0 } else { 0.0 };
+                        ingredient.value = if read_buffer.is_empty() { 0.0 } else { 1.0 };
                     } else {
                         ingredient.value = if check_for_number(read_buffer) { 1.0 } else { 0.0 };
                     }
@@ -194,7 +194,7 @@ impl Interpreter {
                 Statement::CallAuxiliary { recipe } => {
                     if let Some(result_bowl) = self.run_recipe(recipe.clone(), MixingBowlsParent::Other(&mixing_bowls), MixingBowlsParent::Other(&baking_dishes), read_buffer)? {
                         let target_bowl = mixing_bowls.get_mut(1);
-                        for ingredient in result_bowl.into_iter().rev() {
+                        for ingredient in result_bowl.into_iter() {
                             target_bowl.push(ingredient);
                         }
                     }
@@ -205,13 +205,14 @@ impl Interpreter {
                             if let Some(dish) = baking_dishes.get(&i) {
                                 if dish.iter().any(|i| i.liquid) {
                                     for ingredient in dish {
-                                        print!("{}", ingredient)
+                                        print!("{}", ingredient);
                                     }
                                 } else {
                                     for ingredient in dish {
-                                        print!("{}, ", ingredient)
+                                        print!("{}, ", ingredient);
                                     }
                                 }
+                                print!("\n");
                             }
                         }
                     }
