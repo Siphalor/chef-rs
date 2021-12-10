@@ -11,6 +11,7 @@ recipe = {
     ~ (cookingTime ~ WHITE_NEWLINE)?
     ~ (ovenTemperature ~ WHITE_NEWLINE)?
     ~ method
+    ~ (WHITE_NEWLINE ~ ("-"|"="|"_"){3,})?
 }
 
 recipeName = @{ (ALPHABETIC | ASCII_DIGIT | " " | "-" | "+" | "/")+ }
@@ -47,7 +48,7 @@ mixingBowlNumber = { ASCII_DIGIT+ }
 bakingDish = { "the "? ~ (bakingDishNumber ~ ("st" | "nd" | "rd" | "th") ~ " ")? ~ "baking dish" }
 bakingDishNumber = { ASCII_DIGIT+ }
 
-method = { "Method." ~ WHITE_NEWLINE ~ (methodStatement ~ WHITE_SPACE*)+ ~ servesStatement? ~ ("-"|"="|"_"){3,}? }
+method = { "Method." ~ WHITE_NEWLINE ~ (methodStatement ~ WHITE_SPACE*)+ ~ servesStatement? }
 methodStatement = _{
   takeStatement | checkStatement | putStatement | foldStatement | addStatement | removeStatement | combineStatement
     | divideStatement | addDryStatement | liquefyStatement | liquefyBowlStatement
