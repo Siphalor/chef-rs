@@ -30,6 +30,12 @@ There is a new syntax that allows you to check ahead a bit in the input buffer:
 
 Depending on the outcome, the ingredient will either contain 1.0 or 0.0.
 
+### `Shake`ing the bowl
+
+Shaking the bowl will spill all liquid ingredients out and let the biggest dry ingredients float up.
+
+So, it filters out the liquids and sorts the rest from top to bottom (the biggest ingredient will be on the top).
+
 ### `Examine`ing stuff
 
 You can `Examine` ingredients or mixing bowls, which will display their current status.

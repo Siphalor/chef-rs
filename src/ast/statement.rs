@@ -53,6 +53,9 @@ pub enum Statement {
         offset: u64,
         mixin_bowl: MixingBowlId,
     },
+    Sort {
+        mixing_bowl: MixingBowlId,
+    },
     Shuffle {
         mixing_bowl: MixingBowlId,
     },
@@ -178,6 +181,11 @@ impl Statement {
                 Ok(Statement::MoveStatic {
                     mixin_bowl: mixing_bowl,
                     offset,
+                })
+            }
+            Rule::shakeBowlStatement => {
+                Ok(Statement::Sort {
+                    mixing_bowl: expect_mixing_bowl(&mut pairs)?,
                 })
             }
             Rule::mixBowlStatement => {

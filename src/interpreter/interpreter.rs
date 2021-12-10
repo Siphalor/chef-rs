@@ -1,3 +1,4 @@
+use std::cmp::Ordering;
 use std::collections::HashMap;
 
 use rand::seq::SliceRandom;
@@ -136,6 +137,11 @@ impl Interpreter {
                     if let Some(top) = mixing_bowl.pop() {
                         mixing_bowl.insert(mixing_bowl.len() - *offset as usize, top);
                     }
+                }
+                Statement::Sort { mixing_bowl } => {
+                    let mixing_bowl = mixing_bowls.get_mut(mixing_bowl.clone());
+                    mixing_bowl.retain(|i| !i.liquid);
+                    mixing_bowl.sort_by(|a, b| a.value.partial_cmp(&b.value).unwrap_or(Ordering::Equal));
                 }
                 Statement::Shuffle { mixing_bowl } => {
                     let mixing_bowl = mixing_bowls.get_mut(mixing_bowl.clone());
