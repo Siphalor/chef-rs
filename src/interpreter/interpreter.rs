@@ -1,4 +1,4 @@
-use std::cmp::Ordering;
+use std::cmp::{max, Ordering};
 use std::collections::HashMap;
 
 use rand::seq::SliceRandom;
@@ -135,7 +135,7 @@ impl Interpreter {
                 Statement::MoveStatic { mixin_bowl, offset } => {
                     let mixing_bowl = mixing_bowls.get_mut(mixin_bowl.clone());
                     if let Some(top) = mixing_bowl.pop() {
-                        mixing_bowl.insert(mixing_bowl.len() - *offset as usize, top);
+                        mixing_bowl.insert(max(mixing_bowl.len() as u64 - *offset, 0) as usize, top);
                     }
                 }
                 Statement::Sort { mixing_bowl } => {
